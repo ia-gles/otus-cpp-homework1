@@ -5,7 +5,8 @@ set(PROJECT_VERSION 0.0.${PATCH_VERSION})
 
 project(helloworld VERSION ${PROJECT_VERSION})
 
-option(WITH_BOOST_TEST "Whether to build Boost test" ON)
+option(WITH_BOOST_TEST "Whether to build Boost test" OFF)
+option(WITH_GOOGLE_TEST "Whether to build Google test" ON)
 
 configure_file(version.h.in version.h)
 
@@ -45,6 +46,33 @@ if(WITH_BOOST_TEST)
     )
 endif()
 
+if(WITH_GOOGLE_TEST)
+    add_executable(gtest_version gtest_version.cpp)
+
+    include(FetchContent)
+    FetchContent_Declare(
+        googletest
+	GIT_REPOSITORY https://github.com/google/googletest.git
+        GIT_TAG v1.16.0
+    )
+
+    # For Windows: Prevent overriding the parent project's compiler/linker settings
+    set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+    FetchContent_MakeAvailable(googletest)
+
+    set_target_properties(gtest_version PROPERTIES
+        CXX_STANDARD 14
+        CXX_STANDARD_REQUIRED ON
+    )
+    
+    target_link_libraries(gtest_version
+        GTest::gtest_main
+        helloworld
+    )
+endif()
+
+
+
 if (MSVC)
     target_compile_options(helloworld_cli PRIVATE
         /W4
@@ -69,6 +97,11 @@ else ()
             -Wall -Wextra -pedantic -Werror
         )
     endif()
+    if(WITH_GOOGLE_TEST)
+        target_compile_options(gtest_version PRIVATE
+            -Wall -Wextra -pedantic -Werror
+        )
+    endif()
 endif()
 
 install(TARGETS helloworld_cli RUNTIME DESTINATION bin)
@@ -83,4 +116,12 @@ include(CPack)
 if(WITH_BOOST_TEST)
     enable_testing()
     add_test(test_version test_version)
+endif()
+
+if(WITH_GOOGLE_TEST)
+    enable_testing()
+    add_test(gtest_version gtest_version)
+
+    include(GoogleTest)
+    gtest_discover_tests(gtest_version)
 endif()

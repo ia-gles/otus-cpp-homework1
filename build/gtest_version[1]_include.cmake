@@ -1,0 +1,5 @@
+if(EXISTS "/home/ilyas/OTUS/otus-cpp-homework1/build/gtest_version[1]_tests.cmake")
+  include("/home/ilyas/OTUS/otus-cpp-homework1/build/gtest_version[1]_tests.cmake")
+else()
+  add_test(gtest_version_NOT_BUILT gtest_version_NOT_BUILT)
+endif()

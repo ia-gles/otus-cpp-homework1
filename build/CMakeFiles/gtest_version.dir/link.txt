@@ -1,0 +1,1 @@
+/usr/bin/g++ -g -Wl,--dependency-file=CMakeFiles/gtest_version.dir/link.d CMakeFiles/gtest_version.dir/gtest_version.cpp.o -o gtest_version  lib/libgtest_main.a libhelloworld.a lib/libgtest.a

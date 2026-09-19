@@ -31,5 +31,6 @@
 *.out
 *.app
 
+build/
 
 # End of https://mrkandreev.name/snippets/gitignore-generator/#C++,vscode
